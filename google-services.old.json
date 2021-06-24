@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "860636519109",
+    "project_id": "synonymedumot",
+    "storage_bucket": "synonymedumot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:860636519109:android:ea993735900226239daeac",
+        "android_client_info": {
+          "package_name": "com.synonyme.du.mot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "860636519109-sel8b24ufptihvuj1fepr17uqir48c27.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvE7xk8zC8K8EAc__sYZsh1vyIwh_Hpm8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "860636519109-sel8b24ufptihvuj1fepr17uqir48c27.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "523038386039",
+    "project_id": "synonyme-du-mot",
+    "storage_bucket": "synonyme-du-mot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523038386039:android:4e6356ca3378295b5ce372",
+        "android_client_info": {
+          "package_name": "com.silverlab.synonymedunom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "523038386039-e5koh9e5a3ko991is6knf4gm6r5g2m1d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC07Yh3i5lRwMp__jT7uLQDj3JN9iAA4OI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "523038386039-e5koh9e5a3ko991is6knf4gm6r5g2m1d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
