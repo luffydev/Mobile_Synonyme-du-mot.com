@@ -46,31 +46,25 @@ class Database{
 
         var lPromise = new Promise( (pResolve, pReject) => {
 
-            this.mDatabasePtr.transaction(
-                tx => {
-                  console.log("This is printed");
-                  tx.executeSql(
-                    pQuery,
-                    pBind,
-                    (tx, results) => {
-                      pResolve({ rows : results.rows, count : results.length});
-                    },
-                    (tx, error) => {
-                      console.log("query : ", pQuery);
-                      console.log(error);
-                      //alert(error);
-                    }
-                  );
-                },
-                error => {
-                  console.log("query :", pQuery);
-                  console.log("ERROR :", error);
-                  //alert(error);
-                },
-                () => {
-                  console.log("Transaction done");
-                }
-              );
+
+            console.log("CURRENT REQUEST : " +pQuery);
+
+            this.mDatabasePtr.transaction((pTransaction) => {
+              
+              pTransaction.executeSql(pQuery, pBind, (pTransaction, pResults) => 
+              {
+                  pResolve({ rows : pResults.rows, count : pResults.length});
+
+              }, (pTransaction, pError) => {
+                  console.log("ERROR : " + pError);
+                  pReject();
+                  return;
+              });
+
+            }, () => {}, () => {
+              console.log("Transaction done");
+            })
+
         });
 
         return lPromise;        

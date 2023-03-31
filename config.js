@@ -35,10 +35,10 @@ const CONFIG = {
     BASE_PROTOCOL : 'https',
 
     // URL of remote server
-    BASE_URL : 'app.synonyme-du-mot.com',
+    BASE_URL : 'digilab.studio',
 
     // Name of remote DB file
-    DATABASE_DIST_FILENAME : 'database.db',
+    DATABASE_DIST_FILENAME : 'database.db2',
 
     // Not used yet ( maybe deleted later )
     DATABASE_LOCAL_HASH     : '',

@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, ScrollView, Animated, Easing, Platform, Touchab
 import {IconButton, Button, ProgressCircle, Icon} from 'material-bread';
 import * as Speech from 'expo-speech';
 import AdsBanner from './adsBanner';
-import * as Analytics from 'expo-firebase-analytics';
 
 //
 export default class Home_component extends Component
@@ -57,13 +56,9 @@ export default class Home_component extends Component
 
             this.getParent().setState({needLoader:true});
 
-            Analytics.setCurrentScreen('searchWordScreen');
-
             global.DatabaseHandler.query("SELECT id, word, synonyms, antonyms, cm, (SELECT COUNT(favorite.id) FROM favorite WHERE favorite.word = s.word) AS is_favorite FROM synonyms s WHERE id = ?", [pObject.id]).then((pResult) => {
 
                 let lRow = pResult.rows._array[0];
-
-                Analytics.logEvent("searchWord", {'word' : lRow.word});
 
                 if('synonyms' in lRow && 'antonyms' in lRow)
                 {                    
@@ -93,8 +88,6 @@ export default class Home_component extends Component
 
             global.DatabaseHandler.query("SELECT id FROM synonyms WHERE word = ?", [pWord]).then( (pResult) => {
                 
-                Analytics.logEvent("searchWordSynonymAntonym");
-
                 if(!pResult.rows.length)
                     alert("Mot introuvable");
                 else
@@ -118,12 +111,7 @@ export default class Home_component extends Component
 
             var lPtr = this;
             var lTerm = this.state.currentTerm;
-
-            if(lTerm.is_favorite >= 1)
-                Analytics.logEvent('removeFromFavorite');
-            else
-                Analytics.logEvent('addToFavorite');
-
+            
             this.updateDatabase().then(() => {
 
                 if(lTerm.is_favorite >= 1)

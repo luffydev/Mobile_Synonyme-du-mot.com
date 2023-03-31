@@ -2,7 +2,7 @@
   "expo": {
     "name": "Synonyme Du Mot",
     "slug": "SynonymeDuMot",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -10,7 +10,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-	
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -19,45 +18,40 @@
     ],
     "ios": {
       "supportsTablet": false,
-	  "bundleIdentifier": "com.silverlab.synonymedunom",
+      "bundleIdentifier": "com.silverlab.synonymedunom",
       "buildNumber": "1.0.0",
-	  
-	  "config": {
-		  "googleMobileAdsAppId": "ca-app-pub-1842226795073288~1702748037"
-	  }
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-1842226795073288~1702748037"
+      }
     },
-	"android": {
-	  "package": "com.silverlab.synonymedunom",
-	  "googleServicesFile": "./google-services.json",
-	  "versionCode": 2,
-	  "icon": "./assets/icon.png",
+    "android": {
+      "package": "com.silverlab.synonymedunom",
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 2,
+      "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-	
-	  "config": {
-		  "googleMobileAdsAppId": "ca-app-pub-6278136934138629~6945489947"
-	  }
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-6278136934138629~6945489947"
+      }
     },
-	
-	"notification": {
+    "notification": {
       "icon": "./assets/icon_notif.png",
       "color": "#fff",
       "androidMode": "default",
       "androidCollapsedTitle": "n/a"
     },
-	
     "web": {
       "favicon": "./assets/favicon.png",
-	   "config": {
+      "config": {
         "firebase": {
           "apiKey": "AIzaSyC07Yh3i5lRwMp__jT7uLQDj3JN9iAA4OI",
-		  "measurementId": "G-9VP01NDSXJ"
+          "measurementId": "G-9VP01NDSXJ"
         }
       }
     },
-    
     "plugins": [
       [
         "expo-notifications",
@@ -65,6 +59,11 @@
           "icon": "./assets/icon_notif.png"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "2b0d6101-0efe-4919-9d3a-d6acf3f9f4c1"
+      }
+    }
   }
 }

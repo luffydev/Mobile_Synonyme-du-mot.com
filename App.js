@@ -4,11 +4,8 @@ import Loading from './components/Loading'
 import Main_Appbar from './components/Main_Appbar'
 import Event from './SDK/Event';
 import * as Font from 'expo-font';
-import * as Analytics from 'expo-firebase-analytics';
-
 
 global.EventHandler = new Event();
-
 
 export default class App extends React.Component {
 

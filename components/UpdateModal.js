@@ -19,9 +19,11 @@ export default class UpdateModal extends Component
 
         this.doUpdate = () => {
 
+            console.log(global.playStoreID);
+
             if(Platform.OS === 'android') {
-                Linking.canOpenURL('market://details?id=' + props.playStoreID ).then(() => {
-                    Linking.openURL('market://details?id=' + props.playStoreID );
+                Linking.canOpenURL('market://details?id=' + global.playStoreID ).then(() => {
+                    Linking.openURL('market://details?id=' + global.playStoreID );
                 })
                 .catch();
 

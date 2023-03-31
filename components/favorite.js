@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { ProgressCircle, Button } from 'material-bread';
 
 import AdsBanner from './adsBanner';
-import * as Analytics from 'expo-firebase-analytics';
 
 export default class Favorite_component extends Component
 {
@@ -18,8 +17,6 @@ export default class Favorite_component extends Component
         }
 
         this.loadFavorite = () => {
-
-            Analytics.setCurrentScreen('favoriteScreen');
 
             global.DatabaseHandler.query("SELECT s.id, s.word FROM favorite LEFT JOIN synonyms s ON s.word = favorite.word ORDER BY s.id DESC").then((pResult) => {
 

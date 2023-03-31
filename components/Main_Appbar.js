@@ -10,7 +10,6 @@ import Contact_component from './contact';
 import Autocomplete_component from './autocomplete';
 import CONFIG from './../config';
 import * as Notifications from 'expo-notifications';
-import * as Analytics from 'expo-firebase-analytics';
 
 
 const DrawerContent = (props) => {
@@ -282,9 +281,6 @@ export default class Main_Appbar extends Component {
       this.setState({showHome: true});
       this.setState({homeActive: true});
 
-      Analytics.logEvent('openHome');
-      Analytics.setCurrentScreen('homeScreen');
-
       let lPtr = this;
 
       if(lID != 0)
@@ -335,12 +331,6 @@ export default class Main_Appbar extends Component {
 
     this.componentDidUpdate = (pPrevProps, pPrevState) => {
 
-      /*Analytics.setDebugModeEnabled(true);
-
-      console.log("TES");*/
-
-      Analytics.setClientId('9dee851b-af3b-4f27-b95e-0a799a12dd8a');
-
       if(this.state.isOpen)
       {
         
@@ -365,6 +355,8 @@ export default class Main_Appbar extends Component {
 
     this.componentDidMount = () => {
       console.log('did mount');
+
+      global.DatabaseHandler.query(CONFIG.DATABASE_FAVORITE_TABLE_SQL);
     }
 
     this.cancelInput = () => {

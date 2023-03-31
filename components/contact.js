@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import { Icon } from 'material-bread';
-import * as Analytics from 'expo-firebase-analytics';
 import CONFIG from './../config';
 
 export default class Contact_component extends Component
@@ -18,8 +17,6 @@ export default class Contact_component extends Component
     }
 
     componentDidMount() {
-        Analytics.setCurrentScreen('contactScreen');
-        Analytics.logEvent('openContact');
     }
 
 

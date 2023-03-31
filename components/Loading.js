@@ -9,8 +9,6 @@ import {
 
 import uuid from 'react-native-uuid';
 
-import * as Analytics from 'expo-firebase-analytics';
-
 import { Icon } from 'material-bread';
 
 import Constants from 'expo-constants';
@@ -30,6 +28,7 @@ import CONFIG from '../config';
 import Database from '../SDK/Database';
 
 global.DatabaseHandler = new Database;
+global.playstoreID = "";
 
 export default class Loading extends Component {
 
@@ -49,6 +48,7 @@ export default class Loading extends Component {
       loadingError: true,
       playStoreID: '',
       appstoreID: '',
+      updated: false,
     }
     
     this.currentHash = '';
@@ -95,11 +95,6 @@ export default class Loading extends Component {
 
   startNetService = () => {
 
-    Analytics.setClientId(uuid.v4());
-    //Analytics.setDebugModeEnabled(true);
-
-    Analytics.logEvent('startNetService');
-
     const lNetService = new Net();
     var lPtr = this;
 
@@ -111,7 +106,11 @@ export default class Loading extends Component {
     {
         lPtr.setState({loadingText : 'Chargement ...'});
 
+
         var lData = pData.data;
+
+        
+        console.log(lData.play_store_id);
 
         // DB Size from the server
         lPtr.setState({currentSize: lData.size});
@@ -123,7 +122,7 @@ export default class Loading extends Component {
         lPtr.setState({currentVersion: lData.version});
 
         // App play_store id
-        lPtr.setState({playStoreID: lData.play_store_id});
+        global.playStoreID = lData.play_store_id;
 
         // App app_store id
         lPtr.setState({appstoreID: lData.app_store_id});
@@ -137,12 +136,17 @@ export default class Loading extends Component {
               this.finishLoading();
           });
           else
+		  {
+			  console.log("finish");
             this.finishLoading();
+		  }
 
         });
 
     }).catch( (pError) => {
         
+		console.log("TEST");
+		console.log(pError);
         lPtr.setState({loadingError: true});
         lPtr.setState({loadingText: 'Erreur de chargement'});
 
@@ -163,9 +167,15 @@ export default class Loading extends Component {
         return;
       }
 
+      
+
       global.DatabaseHandler.query("SELECT hash FROM settings").then(function(pResult)
       {
-          
+
+          console.log(pResult);
+
+      
+      
           if(!pResult.rows.length)
           {
               global.DatabaseHandler.query("INSERT INTO settings VALUES(?)", [lPtr.state.currentHash]);
@@ -174,36 +184,41 @@ export default class Loading extends Component {
               return;
           }
 
+          console.log("TEST");
+
           let lHash = pResult.rows._array[0].hash;
           console.log("LOCAL HASH : ", lHash);
 
           if(lHash == lPtr.state.currentHash)
           {
+              
               pResolve({state:DB_STATE.STATE_OK});
               return;
           }  
 
           lPtr.backupFavorite().then(pData => {
 
+              lPtr.setState({backupFavorite: pData.favorite});
+              //global.DatabaseHandler.close();
+              pResolve({state:DB_STATE.STATE_NEED_UPDATE});
+
+          }).catch(() => {
+
+            console.log("test zerpijeroiezjrzoejrzoiejrzeoijrzeoirjzoierjzejoirj");
             lPtr.setState({backupFavorite: pData.favorite});
-            global.DatabaseHandler.close();
-
-            lPtr.updateDatabase().then(() => 
-            {
-                global.DatabaseHandler.open();
-               
-                setTimeout(() => 
-                {
-                    pResolve();
-
-                }, 1000);       
-            });
+              //global.DatabaseHandler.close();
+            pResolve({state:DB_STATE.STATE_NEED_UPDATE});
 
           });
 
+      }).catch(() => {
+
+        console.log("TEST CATCH");
+        pResolve({state: DB_STATE.STATE_NEED_UPDATE});
+
       });
 
-    });
+    })
 
     return lPromise;
 }
@@ -219,6 +234,8 @@ backupFavorite = () =>
       else
         pResolve({favorite: pResult.rows._array});
 
+    }).catch(() => {
+      pResolve({favorite: []});
     });
 
   });
@@ -239,6 +256,7 @@ updateDatabase = () => {
 
       lDownloadManager.downloadFile(CONFIG.BASE_PROTOCOL + '://' + CONFIG.BASE_URL + '/' + CONFIG.DATABASE_DIST_FILENAME, CONFIG.DATABASE_LOCAL_FILENAME, this, lPtr.state.currentSize, () => 
       {
+        console.log("test");
           pResolve();
       });
   });
@@ -273,12 +291,6 @@ reload = () => {
 
     setTimeout(() => {
 
-        /*global.DatabaseHandler.query('SELECT name FROM sqlite_master WHERE type = "table"').then((pResult) => 
-        {
-            alert(JSON.stringify(pResult.rows._array));
-            console.log("TEST");
-        });*/
-
         if( (Constants.manifest.version != this.state.currentVersion) && ignoreUpdate == false)
         {
           this.setState({showModal:true});
@@ -287,36 +299,61 @@ reload = () => {
 
         lPtr.setState({ onFinish: true});
 
-        if(lPtr.onLoaded != null)
-            lPtr.onLoaded.setState({mainLoaded: true});
-
-          this.checkForDatabaseUpdate(offlineMode).then( pResult => 
+          this.checkForDatabaseUpdate(offlineMode).then( pUpdateResult => 
             {
-                global.DatabaseHandler.query(CONFIG.DATABASE_FAVORITE_TABLE_SQL).then(function(pResult)
-                {
+
+
                     while(lPtr.state._isMounted == false)
                       continue;
-    
-                    if(lPtr.state.backupFavorite.length > 0)
+
+                    if(pUpdateResult.state == DB_STATE.STATE_NEED_UPDATE && lPtr.state.updated == false)
                     {
-                        console.log("BACKUP FAVORITE");
-                        console.log(lPtr.state.backupFavorite);
-    
-                        lPtr.state.backupFavorite.map((lElement, lI) => {
-                            global.DatabaseHandler.query('INSERT INTO favorite(word) VALUES("'+ lElement.word +'")');
+                        lPtr.setState({ updated : true});
+                        console.log("UPDATE");
+
+                       
+                        
+                        lPtr.updateDatabase().then( () => {
+
+
+
+                          global.DatabaseHandler.query(CONFIG.DATABASE_FAVORITE_TABLE_SQL).then(function(pResult)
+                          {
+
+                            if(lPtr.state.backupFavorite.length > 0)
+                            {
+                                console.log("BACKUP FAVORITE");
+                                console.log(lPtr.state.backupFavorite);
+            
+                                lPtr.state.backupFavorite.map((lElement, lI) => {
+                                    global.DatabaseHandler.query('INSERT INTO favorite(word) VALUES("'+ lElement.word +'")');
+                                });
+                            }
+
+                              lPtr.setState({ loadingText : 'Finalisation...' });
+        
+                              setTimeout(() => {
+              
+                                  if(lPtr.onLoaded != null)
+                                      lPtr.onLoaded.setState({mainLoaded: true});
+              
+                              }, 1000);
+
+                              });
+
                         });
+                        
+                    }else{
+                      lPtr.setState({ loadingText : 'Finalisation...' });
+    
+                      setTimeout(() => {
+      
+                          if(lPtr.onLoaded != null)
+                              lPtr.onLoaded.setState({mainLoaded: true});
+      
+                      }, 1000);
+
                     }
-    
-                    lPtr.setState({ loadingText : 'Finalisation...' });
-    
-                    setTimeout(() => {
-    
-                        if(lPtr.onLoaded != null)
-                            lPtr.onLoaded.setState({mainLoaded: true});
-    
-                    }, 1000);
-    
-                });
             });
   }, 1500);
     

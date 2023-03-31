@@ -21,7 +21,8 @@ class DownloadManager
 
     async downloadFile(pURL, pLocalName, pPtr = null, pSize = 0, pCallback = () => {})
     {
-        this.cleanOldDatabases().then(async () => {
+		console.log("start");
+        
             
             const lCallback = pDownloadProgress => {
 
@@ -29,10 +30,14 @@ class DownloadManager
                     pSize = pDownloadProgress.totalBytesExpectedToWrite;
     
                 const lPercent = pDownloadProgress.totalBytesWritten / pSize;
+                
     
                 if(pPtr != null)
                     pPtr.updateProgress(lPercent);
             }
+			
+			console.log(pURL);
+            console.log(FileSystem.documentDirectory + 'SQLite/' + pLocalName);
     
             const lDownloadResumable = FileSystem.createDownloadResumable(pURL,
             FileSystem.documentDirectory + 'SQLite/' + pLocalName, {}, lCallback);
@@ -40,12 +45,13 @@ class DownloadManager
             try {
                 const { uri } = await lDownloadResumable.downloadAsync();
                 console.log('Finished downloading to ', uri);
+
+                global.DatabaseHandler.open();
     
                 pCallback();
               } catch (e) {
                 console.error("ERROR : ", e);
-            }
-        });   
+            } 
     }
 
     cleanOldDatabases()
